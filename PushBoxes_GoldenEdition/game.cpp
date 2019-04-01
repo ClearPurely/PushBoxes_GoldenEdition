@@ -5,13 +5,13 @@ void pause();
 void lastlevel();
 void passlevel(int step_num);
 
-int gameloop(int level,int character)
+int gameloop(int level,int character,int keys)
 {
 	mciSendString(TEXT("open Boxmove.wav alias tusi"), NULL, 0, NULL);
 
 //定义音乐对象
 	MUSIC mus;
-	mus.OpenFile("resources\\music\\Boxmove.wav"); // 打开文件
+	mus.OpenFile("resources\\music\\Boxmove.wav"); 
 	MUSIC mus1;
 	mus1.OpenFile("resources\\music\\Tusi.mp3");
 
@@ -112,7 +112,6 @@ int gameloop(int level,int character)
 
 	while (is_run())
 	{
-//		system("cls");
 //界面打印
 	switch (scenes) {
 //游戏界面		
@@ -227,11 +226,6 @@ int gameloop(int level,int character)
 				lastlevel();
 			else
 				passlevel(step_num);
-			break;
-//选择角色
-		case 3:
-
-
 			break;
 		default:
 			break;
@@ -451,156 +445,178 @@ int gameloop(int level,int character)
 				break;
 //超能力
 	//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+//按键III
 			case'i':
 			case'I':
 //王校长的能力
-				switch (map->map[y - 1][x]) {
-				case'O':
-				case'Q':
-					if ( character == 1 && food == 0){
-						map->map[y - 1][x] = ' ';
-						food = 1;
+				if (character == 1) {
+					switch (map->map[y - 1][x]) {
+					case'O':
+					case'Q':
+						if (food == 0) {
+							map->map[y - 1][x] = ' ';
+							food = 1;
+						}
+						break;
+					case' ':
+						if (food == 1) {
+							map->map[y - 1][x] = 'O';
+							food = 0;
+						}
+						break;
+					case'X':
+						if (food == 1) {
+							map->map[y - 1][x] = 'Q';
+							food = 0;
+						}
+						break;
+					default:
+						break;
 					}
-					break;
-				case' ':
-					if (character == 1 && food == 1) {
-						map->map[y - 1][x] = 'O';
-						food = 0;
-					}
-					break;
-				case'X':
-					if (character == 1 && food == 1) {
-						map->map[y - 1][x] = 'Q';
-						food = 0;
-					}
-					break;
-				default:
-					break;
 				}
 //蜘蛛侠的能力
-				switch (map->map[y - 2][x]) {
-				case'Q':
-				case'O':
-					if (character == 2 && map->map[y - 1][x] == ' ') {	
-						mus1.Play(0);
-						map->map[y - 1][x] = 'O';
-						map->map[y - 2][x] = ' ';
+				if (character == 2) {
+					for (int dis = 1;; dis++) {
+						if ((map->map[y - dis - 1][x] == 'Q' || map->map[y - dis - 1][x] == 'O') && map->map[y - dis][x] == ' ') {
+							mus1.Play(0);
+							map->map[y - dis][x] = 'O';
+							map->map[y - dis - 1][x] = ' ';
+							break;
+						}
+						else if (map->map[y - 1][x] == 'Q' || map->map[y - 1][x] == 'O' || map->map[y - 1][x] == '#')
+							break;
 					}
 				}
 				break;
+//按键KKKKK
 			case'k':
 			case'K':
 //王校长的能力
-				switch (map->map[y + 1][x]) {
-				case'O':
-				case'Q':
-					if (character == 1 && food == 0) {
-						map->map[y + 1][x] = ' ';
-						food = 1;
+				if (character == 1) {
+					switch (map->map[y + 1][x]) {
+					case'O':
+					case'Q':
+						if ( food == 0) {
+							map->map[y + 1][x] = ' ';
+							food = 1;
+						}
+						break;
+					case' ':
+						if ( food == 1) {
+							map->map[y + 1][x] = 'O';
+							food = 0;
+						}
+						break;
+					case'X':
+						if ( food == 1) {
+							map->map[y + 1][x] = 'Q';
+							food = 0;
+						}
+						break;
+					default:
+						break;
 					}
-					break;
-				case' ':
-					if (character == 1 && food == 1) {
-						map->map[y + 1][x] = 'O';
-						food = 0;
-					}
-					break;
-				case'X':
-					if (character == 1 && food == 1) {
-						map->map[y + 1][x] = 'Q';
-						food = 0;
-					}
-					break;
-				default:
-					break;
 				}
 //蜘蛛侠的能力
-				switch (map->map[y +2][x]) {
-				case'Q':
-				case'O':
-					if (character == 2 && map->map[y + 1][x] == ' ') {	
-						mus1.Play(0);
-						map->map[y + 1][x] = 'O';
-						map->map[y + 2][x] = ' ';
-										}
+				if (character == 2){
+					for (int dis = 1;; dis++) {
+						if ((map->map[y + dis + 1][x] == 'Q' || map->map[y + dis + 1][x] == 'O') &&  map->map[y + dis][x] == ' ') {
+							mus1.Play(0);
+							map->map[y + dis][x] = 'O';
+							map->map[y + dis + 1][x] = ' ';
+							break;
+						}
+						else if (map->map[y + 1][x] == 'Q' || map->map[y + 1][x] == 'O' || map->map[y + 1][x] == '#')
+							break;
+					}
 				}
-
 				break;
+//按键JJJ
 			case'J':
 			case'j':
 //王校长的能力
-				switch (map->map[y][x - 1]) {
-				case'O':
-				case'Q':
-					if (character == 1 && food == 0) {
-						map->map[y][x-1] = ' ';
-						food = 1;
+				if (character == 1) {
+					switch (map->map[y][x - 1]) {
+					case'O':
+					case'Q':
+						if (food == 0) {
+							map->map[y][x - 1] = ' ';
+							food = 1;
+						}
+						break;
+					case' ':
+						if ( food == 1) {
+							map->map[y][x - 1] = 'O';
+							food = 0;
+						}
+						break;
+					case'X':
+						if (food == 1) {
+							map->map[y][x - 1] = 'Q';
+							food = 0;
+						}
+						break;
+					default:
+						break;
 					}
-					break;
-				case' ':
-					if (character == 1 && food == 1) {
-						map->map[y][x-1] = 'O';
-						food = 0;
-					}
-					break;
-				case'X':
-					if (character == 1 && food == 1) {
-						map->map[y][x-1] = 'Q';
-						food = 0;
-					}
-					break;
-				default:
-					break;
 				}
 //蜘蛛侠的能力
-				switch (map->map[y][x-2]) {
-				case'Q':
-				case'O':
-					if (character == 2 && map->map[y][x-1] == ' ') {
-						mus1.Play(0);
-						map->map[y][x-1] = 'O';
-						map->map[y][x-2] = ' ';						
+				if (character == 2) {
+					for (int dis = 1;; dis++) {
+						if ((map->map[y][x - dis - 1] == 'Q' || map->map[y][x - dis - 1] == 'O') && map->map[y][x - dis] == ' ') {
+							mus1.Play(0);
+							map->map[y][x - dis] = 'O';
+							map->map[y][x - dis - 1] = ' ';
+							break;
+						}
+						else if (map->map[y][x - 1] == 'Q' || map->map[y][x - 1] == 'O' || map->map[y][x - 1] == '#')
+							break;
 					}
 				}
-
 				break;
+//按键LLL
 			case'L':
 			case'l':
 //王校长的能力
-				switch (map->map[y][x + 1]) {
-				case'O':
-				case'Q':
-					if (character == 1 && food == 0) {
-						map->map[y][x+1] = ' ';
-						food = 1;
+				if (character == 1) {
+					switch (map->map[y][x + 1]) {
+					case'O':
+					case'Q':
+						if (food == 0) {
+							map->map[y][x + 1] = ' ';
+							food = 1;
+						}
+						break;
+					case' ':
+						if (food == 1) {
+							map->map[y][x + 1] = 'O';
+							food = 0;
+						}
+						break;
+					case'X':
+						if (food == 1) {
+							map->map[y][x + 1] = 'Q';
+							food = 0;
+						}
+						break;
+
+					default:
+						break;
 					}
-					break;
-				case' ':
-					if (character == 1 && food == 1) {
-						map->map[y][x+1] = 'O';
-						food = 0;
-					}
-					break;
-				case'X':
-					if (character == 1 && food == 1) {
-						map->map[y][x+1] = 'Q';
-						food = 0;
-					}
-					break;
-				default:
-					break;
 				}
 //蜘蛛侠的能力
-				switch (map->map[y ][x+2]) {
-				case'Q':
-				case'O':
-					if (character == 2 && map->map[y][x+1] == ' ') {
-						mus1.Play(0);
-						map->map[y][x+1] = 'O';
-						map->map[y][x+2] = ' ';
+				if (character == 2 ) {
+					for (int dis = 1;; dis++) {
+						if ((map->map[y][x + dis + 1] == 'Q' || map->map[y][x + dis + 1] == 'O') && map->map[y][x + dis] == ' ') {
+							mus1.Play(0);
+							map->map[y][x + dis] = 'O';
+							map->map[y][x + dis + 1] = ' ';
+							break;
+						}
+						else if (map->map[y][x + 1] == 'Q' || map->map[y][x + 1] == 'O' || map->map[y][x + 1] == '#')
+							break;
 					}
 				}
-
 				break;
 	//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 //无限撤消
@@ -628,32 +644,18 @@ int gameloop(int level,int character)
 				}
 				break;
 
-			case'e':
-			case'E':
-				if (character < 2 && character >= 0)
-					character++;
-				else if (character == 2)
-					character = 0;
-				break;
-			case'q':
-			case'Q':
-				if (character > 0 && character <= 2)
-					character--;
-				else if (character == 0)
-					character = 2;
-				break;
-
 			case 'R':					//重玩（R）
 			case'r':
 				isEnd = 1;
 				reValue = 4;
 				break;
-			case 27:					//打开暂停菜单（ESC）
+//打开暂停菜单（ESC）
+			case 27:					
 				mciSendString("close bgm2", NULL, 0, NULL);
 				scenes = 1;
 				break;
-//			default:
-//				break;
+			default:
+				break;
 			}
 			break;
 //暂停菜单事件判定
@@ -691,8 +693,9 @@ int gameloop(int level,int character)
 				break;
 			}
 			break;
-			//过关界面事件判定
+//过关界面事件判定
 		case 2:
+
 			switch (option)
 			{
 			case'X':				//选关(X)
@@ -719,10 +722,12 @@ int gameloop(int level,int character)
 				isEnd = 1;
 				break;
 			}
+
+			break;
 		default:
 			break;
 		}
-		//逻辑更新
+//逻辑更新
 		int isOver = 1;
 		switch (scenes)
 		{
@@ -731,9 +736,19 @@ int gameloop(int level,int character)
 				if (map->map[map->aimy[i]][map->aimx[i]] != 'Q')
 					isOver = 0;
 			}
-			if (isOver)
-				scenes = 2;
+			if (isOver) {
+// 关卡锁
+//				if (pd1[level]) {
+					keys = keys + 1;
+					FILE *fp2;//用于打开关卡文件的文件指针
+					fp2 = fopen("resources\\data\\key.txt", "w");//以只
+					if (keys < maps_num)
+						fprintf(fp2, "%d", keys);
+					fclose(fp2);
+//				}
 
+				scenes = 2;
+			}
 			for (int i = 0; i < map->aim_count; i++) {
 				if (map->map[map->aimy[i]][map->aimx[i]] == ' ')
 					map->map[map->aimy[i]][map->aimx[i]] = 'X';
@@ -746,6 +761,7 @@ int gameloop(int level,int character)
 		default:
 			break;
 		}
+
 		if (isEnd)
 			break;
 	}
@@ -778,8 +794,8 @@ int gameloop(int level,int character)
 	delimage(pimg_ManUP2);
 	delimage(pimg_ManLEFT2);
 
-//	mus.Close();
-//	mus1.Close();
+	mus.Close();
+	mus1.Close();
 //	mus2.Close();
 //	mus3.Close();
 
@@ -825,7 +841,6 @@ Map* LoadMap(int level)
 	fclose(fp);
 	return temp;
 }
-
 
 //■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
@@ -950,7 +965,13 @@ void lastlevel()
 	setfontbkcolor(EGERGB(0x80, 0x00, 0x80));
 	setfont(48, 0, "楷体");
 	setbkmode(TRANSPARENT);
-	outtextxy(280, 250, "这已经是最后一关了！");
+	outtextxy(420, 150, "这已经是最后一关了！");
+
+	setfont(40, 0, "楷体");
+	outtextxy(140, 350, "选关(X)");
+	outtextxy(320, 350, "重玩(Q)");
+	outtextxy(480, 350, "下一关(N)");
+	outtextxy(700, 350, "菜单(M)");
 }
 
 

@@ -18,14 +18,13 @@ void mainloop()
 	level_option = 1;
 	scenes = 0;
 	isend = 0;
+//关卡锁
+	int keys;
 
+	
 	while (is_run())
 	{
-
-
-//		system("cls");
-		//判断并打印主界面
-
+//判断并打印主界面
 		switch (scenes)
 		{
 		case 0:
@@ -68,16 +67,16 @@ void mainloop()
 		case 0:
 			switch (option)
 			{
-			case 'a':
-			case 'A':
+			case 'W':
+			case 'w':
 				if (a==2)
 					a = 1;
 				else if (a == 1)
 					a = 2;
 					scenes = 0;
 					break;
-			case'd':
-			case'D':
+			case's':
+			case'S':
 				if(a==1)
 					a = 2;
 				else if (a == 2)
@@ -92,24 +91,24 @@ void mainloop()
 					isend = 1;
 				mciSendString("close bgm", NULL, 0, NULL);
 				break;
-//			default:
-//				break;
+			default:
+				break;
 			}
 			break;
 //第二界面的操作指令
 		case 1:
 			switch (option)
 			{
-			case 'a':
-			case 'A':
+			case 'W':
+			case 'w':
 				if (b <= 4 && b > 1 )
 					b--;
 				else if (b == 1)
 					b=4;
 				scenes = 1;
 				break;
-			case'D':
-			case'd':
+			case's':
+			case'S':
 				if (b == 4)
 					b = 1;
 				else if ( b < 4 && b>=1)
@@ -133,13 +132,28 @@ void mainloop()
 				break;
 			}
 			break;
-			//选关界面操作指令
-		case 2:
+//选关界面操作指令
+		case 2: 
+//关卡锁
+			FILE *fp1;//用于打开关卡文件的文件指针
+			fp1 = fopen("resources\\data\\key.txt", "r");//以只
+			fscanf(fp1, "%d", &keys);
+			fclose(fp1);
+/*			int pd1[35] = { 0 };
+			for (int i = 0; i <= keys; i++)
+			{
+				pd1[keys] = 0;
+			}
+			for (int i = (maps_num-keys); i < 35; i++)
+			{
+				pd1[keys] = 1;
+			}
+*/
 			switch (option)
 			{
 			case 'd':
 			case 'D':
-				if (level_option < maps_num)
+				if (level_option < keys)
 					level_option++;
 				break;
 			case 'a':
@@ -152,7 +166,7 @@ void mainloop()
 				mciSendString("close bgm3", NULL, 0, NULL);
 				level = level_option;
 				scenes = 4;
-				break;
+				break; 
 			case 27:
 				mciSendString("close bgm3", NULL, 0, NULL);
 				scenes = 1;
@@ -161,25 +175,26 @@ void mainloop()
 				break;
 			}
 			break;
-			//从头开始，进入游戏
+//从头开始，进入游戏
 		case 3:
 			level = 1;
-			scenes = gameloop(level, character);
+			scenes = gameloop(level, character,keys);
 			break;
-			//开始所选关卡或进入下一关
+//开始所选关卡或进入下一关
 		case 4:
-			scenes = gameloop(level, character);
+			scenes = gameloop(level, character,keys);
 			break;
-			//开始下一关
+//开始下一关
 		case 5:
 			level++;
 			scenes = 4;
 			break;
-			//通关重置数据
+//通关重置数据
 		case 6:
 			level = 0;
 			scenes = 0;
 			break;
+//选择角色
 		case 7:
 			switch (option)
 			{
@@ -201,6 +216,7 @@ void mainloop()
 				break;
 			case 32:
 			case 13:
+				mciSendString("close select", NULL, 0, NULL);
 				if (c == 0)
 					character = 0;
 				else if (c == 1)
@@ -244,7 +260,11 @@ void main_interface0_1()
 
 	setfontbkcolor(EGERGB(0x80, 0x00, 0x80));
 
-
+	setcolor(EGERGB(0x40, 0xE0, 0xD0));
+	setfontbkcolor(EGERGB(0x80, 0x00, 0x80));
+	setfont(25, 0, "楷体");
+	setbkmode(TRANSPARENT);
+	outtextxy(200, 600, "按W,S选择，回车和空格确认。");
 
 	delimage(menu0_1);
 }
@@ -267,7 +287,11 @@ void main_interface0_2()
 	bar(0, 0, 5, 720);
 	bar(1275, 0, 1280, 720);
 
-
+	setcolor(EGERGB(0x40, 0xE0, 0xD0));
+	setfontbkcolor(EGERGB(0x80, 0x00, 0x80));
+	setfont(25, 0, "楷体");
+	setbkmode(TRANSPARENT);
+	outtextxy(200, 600, "按W,S选择，回车和空格确认。");
 
 	delimage(menu0_2);
 }
@@ -369,16 +393,11 @@ void selectLevel(int level)
 	bar(0, 715, 1280, 720);
 	bar(0, 0, 5, 720);
 	bar(1275, 0, 1280, 720);
-//文字背景色（注意setbkcolor函数也会同时改变文字背景色）
+
 	setfontbkcolor(EGERGB(0x80, 0x00, 0x80));
 
-//设置字体，第一个参数是字体的高度（像素），第二个参数是字体的宽度，第二个参数如果为0，就使用默认比例值
-//如果高度为12，即相当于小五号字，或者9磅字，实际的换算就自己完成吧
 	setfont(48, 0, "楷体");
 
-//写文字，注意：outtextxy不支持\t \n这类格式化用的特殊字符，这类字符会被忽略
-//要使用特殊格式化字符请用outtextrect
-//设置文字背景填充方式为透明，默认为OPAQUE不透明
 	setbkmode(TRANSPARENT);
 	outtextxy(670, 60, "按A，D键选关");
 	char str[20];
@@ -389,6 +408,9 @@ void selectLevel(int level)
 
 void select_hero0()
 {
+	mciSendString("open resources\\music\\SOME.mp3 alias select", NULL, 0, NULL);
+	mciSendString("play select repeat", NULL, 0, NULL);
+
 	cleardevice();
 
 	PIMAGE pimg_SH0 = newimage();
@@ -405,6 +427,9 @@ void select_hero0()
 
 void select_hero1()
 {
+	mciSendString("open resources\\music\\SOME.mp3 alias select", NULL, 0, NULL);
+	mciSendString("play select repeat", NULL, 0, NULL);
+
 	cleardevice();
 
 	PIMAGE pimg_SH1 = newimage();
@@ -421,6 +446,9 @@ void select_hero1()
 
 void select_hero2()
 {
+	mciSendString("open resources\\music\\SOME.mp3 alias select", NULL, 0, NULL);
+	mciSendString("play select repeat", NULL, 0, NULL);
+
 	cleardevice();
 
 	PIMAGE pimg_SH2 = newimage();

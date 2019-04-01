@@ -1,7 +1,9 @@
 //==========================
-//1、运用了结构体。
+//版本号：1.1
+//1、运用了结构体加载地图。
 //2、可以选择角色，运用超能力。
 //3、可以无限撤消。
+//4、关卡锁，角色锁。
 //==========================
 #include"function.h"
 
@@ -11,8 +13,8 @@
 
 int main(void)
 {
-	ege::setinitmode(ege::INIT_ANIMATION);
-	// 图形初始化
+	ege::setinitmode(ege::INIT_ANIMATION);// 图形初始化
+
 	ege::initgraph(Win_L, Win_H);
 
 	setcaption("推箱子黄金版");	   //修改窗口名称
@@ -25,4 +27,3 @@ int main(void)
 
 	return 0;
 }
-
